@@ -27,10 +27,12 @@ GKE provides a fully managed, highly available Kubernetes control plane, includi
 * Managed etcd with automated backups
 * Managed kube-scheduler and kube-controller-manager
 This allows teams to focus on workloads instead of control plane maintenance.
+
 Cluster Design
 * Control Plane: Fully managed and highly available by GKE
 * Worker Nodes: Multiple nodes using node pools
 * Availability Zones: Multi-zone deployment (recommended)
+  
 Details are documented in:
 gke-cluster/
 ├── cluster-overview.md
