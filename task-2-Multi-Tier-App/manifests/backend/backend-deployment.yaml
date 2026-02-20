@@ -13,25 +13,46 @@ spec:
       labels:
         app: backend
     spec:
+      # 1. Use an Init Container to handle the installation
+      initContainers:
+      - name: install-deps
+        image: node:18
+        workingDir: /app
+        command: ["/bin/sh", "-c"]
+        args: ["npm install mysql2"]
+        volumeMounts:
+        - name: node-modules
+          mountPath: /app/node_modules
+
       containers:
         - name: backend
-          image: busybox:1.36
-          command:
-            - sh
-            - -c
+          image: node:18
+          workingDir: /app
+          command: ["node", "-e"]
+          # 2. Pass the code as a single string to avoid shell issues
+          args:
             - |
-              echo "Backend started";
-              echo "Using DB credentials from Kubernetes Secret";
-              echo "DB_HOST=$DB_HOST";
-              echo "DB_NAME=$DB_NAME";
-              echo "DB_USER=$DB_USER";
-              echo "Checking MySQL connectivity...";
-              while true; do
-                nc -z "$DB_HOST" 3306 \
-                  && echo "MySQL reachable" \
-                  || echo "Waiting for MySQL...";
-                sleep 10;
-              done
+              const mysql = require('mysql2');
+              const http = require('http');
+              const dbConfig = {
+                host: process.env.DB_HOST,
+                user: process.env.DB_USER,
+                password: process.env.DB_PASSWORD,
+                database: process.env.DB_NAME
+              };
+              const server = http.createServer((req, res) => {
+                const db = mysql.createConnection(dbConfig);
+                db.query('SELECT 1', (err) => {
+                  if (err) {
+                    res.statusCode = 500;
+                    res.end('Backend: DB connection failed');
+                  } else {
+                    res.end('Backend: Connected to MySQL');
+                  }
+                  db.end();
+                });
+              });
+              server.listen(3000, () => console.log('Backend running on port 3000'));
           env:
             - name: DB_HOST
               value: mysql.database.svc.cluster.local
@@ -50,4 +71,13 @@ spec:
                 secretKeyRef:
                   name: mysql-secret
                   key: MYSQL_PASSWORD
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+          - name: node-modules
+            mountPath: /app/node_modules
 
+      # 3. Shared volume to pass node_modules from init to app container
+      volumes:
+      - name: node-modules
+        emptyDir: {}
