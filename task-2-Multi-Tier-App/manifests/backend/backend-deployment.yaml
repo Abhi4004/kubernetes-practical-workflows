@@ -29,11 +29,11 @@ spec:
           image: node:18
           workingDir: /app
           command: ["node", "-e"]
-          # 2. Pass the code as a single string to avoid shell issues
           args:
             - |
               const mysql = require('mysql2');
               const http = require('http');
+              const fs = require('fs'); // Added fs to test shared volume later
               const dbConfig = {
                 host: process.env.DB_HOST,
                 user: process.env.DB_USER,
@@ -76,8 +76,15 @@ spec:
           volumeMounts:
           - name: node-modules
             mountPath: /app/node_modules
+          # ✅ ADDED: Mount point for inter-pod file sharing (Task 2)
+          - name: shared-storage
+            mountPath: /var/www/shared-data
 
-      # 3. Shared volume to pass node_modules from init to app container
+      # 3. Shared volumes
       volumes:
       - name: node-modules
         emptyDir: {}
+      # ✅ ADDED: Reference to the Filestore PVC
+      - name: shared-storage
+        persistentVolumeClaim:
+          claimName: shared-data-pvc
