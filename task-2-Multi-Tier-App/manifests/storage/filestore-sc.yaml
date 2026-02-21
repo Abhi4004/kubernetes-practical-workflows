@@ -1,0 +1,9 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: filestore-shared
+provisioner: filestore.csi.storage.gke.io
+parameters:
+  tier: standard # 'tier' is the correct key for Filestore, not 'type'
+  network: default
+allowVolumeExpansion: true
