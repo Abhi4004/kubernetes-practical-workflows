@@ -26,6 +26,16 @@ spec:
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
+            # ✅ ADDED: Mount point for the shared Filestore volume (Task 2)
+            - name: shared-storage
+              mountPath: /var/www/shared-data
+      
+      # ✅ ADDED: Reference to the external Filestore PVC
+      volumes:
+        - name: shared-storage
+          persistentVolumeClaim:
+            claimName: shared-data-pvc
+
   volumeClaimTemplates:
     - metadata:
         name: mysql-data
@@ -35,4 +45,3 @@ spec:
         resources:
           requests:
             storage: 10Gi
-
