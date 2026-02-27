@@ -6,8 +6,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/Abhi4004/kubernetes-practical-workflows.git # ⬅️ Updated URL
-    targetRevision: task-2
+    repoURL: https://github.com/Abhi4004/kubernetes-practical-workflows.git
+    targetRevision: v1.0-final-submission
     path: task-2-Multi-Tier-App/environments/dev
     directory:
       recurse: true 
