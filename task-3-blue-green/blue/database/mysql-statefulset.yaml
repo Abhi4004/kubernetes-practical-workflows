@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mysql
+  name: mysql-blue
   namespace: database
 spec:
   serviceName: mysql
@@ -13,6 +13,7 @@ spec:
     metadata:
       labels:
         app: mysql
+        version: v1 # ✅ ADDED: Version label for blue deployment
     spec:
       containers:
         - name: mysql
@@ -22,11 +23,11 @@ spec:
               name: mysql
           envFrom:
             - secretRef:
-                name: mysql-secret
+                name: mysql-secret-blue
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
-            # ✅ ADDED: Mount point for the shared Filestore volume (Task 2)
+            # ✅ ADDED: Mount point for the shared Filestore volume 
             - name: shared-storage
               mountPath: /var/www/shared-data
       
@@ -34,7 +35,7 @@ spec:
       volumes:
         - name: shared-storage
           persistentVolumeClaim:
-            claimName: shared-data-pvc
+            claimName: mysql-pvc-blue
 
   volumeClaimTemplates:
     - metadata:
