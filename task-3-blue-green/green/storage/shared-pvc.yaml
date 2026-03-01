@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: shared-data-pvc
+  name: mysql-pvc-green
   namespace: database
 spec:
   accessModes:

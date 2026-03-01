@@ -1,17 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend
+  name: backend-green
   namespace: database
 spec:
   replicas: 2
   selector:
     matchLabels:
       app: backend
+      version: v2 # ✅ ADDED: Label to differentiate versions
   template:
     metadata:
       labels:
         app: backend
+        version: v2 # ✅ ADDED: Label to differentiate versions
     spec:
       # 1. Use an Init Container to handle the installation
       initContainers:
@@ -55,21 +57,21 @@ spec:
               server.listen(3000, () => console.log('Backend running on port 3000'));
           env:
             - name: DB_HOST
-              value: mysql.database.svc.cluster.local
+              value: mysql-green.database.svc.cluster.local
             - name: DB_NAME
               valueFrom:
                 secretKeyRef:
-                  name: mysql-secret
+                  name: mysql-secret-green
                   key: MYSQL_DATABASE
             - name: DB_USER
               valueFrom:
                 secretKeyRef:
-                  name: mysql-secret
+                  name: mysql-secret-green
                   key: MYSQL_USER
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql-secret
+                  name: mysql-secret-green
                   key: MYSQL_PASSWORD
           ports:
             - containerPort: 3000

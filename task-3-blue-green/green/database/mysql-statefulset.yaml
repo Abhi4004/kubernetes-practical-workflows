@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: mysql
+  name: mysql-green
   namespace: database
 spec:
   serviceName: mysql
@@ -9,10 +9,12 @@ spec:
   selector:
     matchLabels:
       app: mysql
+      version: v2 # ✅ ADDED: Version label for green deployment
   template:
     metadata:
       labels:
         app: mysql
+        version: v2 # ✅ ADDED: Version label for green deployment
     spec:
       containers:
         - name: mysql
@@ -22,7 +24,7 @@ spec:
               name: mysql
           envFrom:
             - secretRef:
-                name: mysql-secret
+                name: mysql-secret-green # ✅ UPDATED: Reference to the green secret
           volumeMounts:
             - name: mysql-data
               mountPath: /var/lib/mysql
@@ -34,7 +36,7 @@ spec:
       volumes:
         - name: shared-storage
           persistentVolumeClaim:
-            claimName: shared-data-pvc
+            claimName: mysql-pvc-green # ✅ UPDATED: Reference to the green PVC
 
   volumeClaimTemplates:
     - metadata:
