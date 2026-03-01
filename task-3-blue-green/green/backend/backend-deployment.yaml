@@ -89,4 +89,4 @@ spec:
       # ✅ ADDED: Reference to the Filestore PVC
       - name: shared-storage
         persistentVolumeClaim:
-          claimName: shared-data-pvc
+          claimName: mysql-pvc-green # ✅ UPDATED: Reference to the green PVC
