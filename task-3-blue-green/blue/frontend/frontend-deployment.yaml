@@ -14,7 +14,8 @@ spec:
       labels:
         app: frontend
         version: v1 # ✅ ADDED: Version label for blue deployment
-      containers:
+    spec: 
+      containers: 
         - name: frontend
           image: nginx:alpine
           ports:
