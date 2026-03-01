@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cluster-bootstrap-master
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Abhi4004/kubernetes-practical-workflows.git
+    targetRevision: task3
+    path: task-3-blue-green/argo-manager # ⬅️ Pointing to your manager folder
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
