@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/Abhi4004/kubernetes-practical-workflows.git
-    targetRevision: task3    # ⬅️ Now looking at your new branch
+    targetRevision: task3    # ⬅️ Now looking at new branch
     path: task-3-blue-green/blue  # ⬅️ Pointing to the new Blue folder
     directory:
       recurse: true 
